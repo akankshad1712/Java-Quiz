@@ -1,0 +1,301 @@
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Java Quiz</title>
+<style>
+
+:root {
+  --light-bg: #fff;
+  --light-text: #07120a;
+  --light-button: #a08f5c;
+  --light-button-hover: #0d0c09;
+  --light-feedback: #140f0f;
+  --light-score: #4e968d;
+  --light-next: #ffca28;
+
+  --dark-bg: #06142e;
+  --dark-text: #8a0202;
+  --dark-button: #edb613;
+  --dark-button-hover: #0d0b06;
+  --dark-feedback: #140f0f;
+  --dark-score: #1cecd4;
+  --dark-next: #d0a00e;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: var(--light-bg);
+  margin: 0;
+  padding: 10px;
+  color: var(--light-text);
+}
+
+header {
+  background-color: var(--light-button);
+  color: var(--light-text);
+  padding: 20px;
+  text-align: center;
+}
+
+header h1 {
+  margin: 0;
+}
+
+.theme-toggler {
+  background-color: #fff;
+  border: none;
+  color: var(--light-text);
+  cursor: pointer;
+  padding: 5px 10px;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+
+.theme-toggler:hover {
+  background-color: #ddd;
+}
+
+#quiz-container {
+  width: 500px;
+  margin: 50px auto;
+  background-color: var(--light-button);
+  border-radius: 5px;
+  box-shadow: 15px 15px 6px rgba(0, 0, 0, 0.6);
+  padding: 20px;
+}
+
+#question {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+#choices {
+  display: flex;
+  flex-flow: column;
+  margin: 25px;
+  width: 80px;
+}
+
+button {
+  flex-basis: calc(50% - 10px);
+  margin-bottom: 10px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: var(--light-button-hover);
+}
+
+#feedback {
+  font-size: 18px;
+  margin-bottom: 20px;
+}
+
+#score-container {
+  width: 500px;
+  margin: 50px auto;
+  background-color: var(--light-bg);
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(186, 14, 14, 0.3);
+  padding: 20px;
+  text-align: center;
+}
+
+#final-score {
+  font-size: 36px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+#next {
+  margin-left: 200px;
+  padding: 10px 50px;
+  background-color: var(--light-next);
+  color: var(--light-text);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#next:hover {
+  background-color: #ddd;
+}
+
+body.dark {
+  background-color: var(--dark-bg);
+  color: var(--dark-text);
+}
+
+body.dark header {
+  background-color: var(--dark-button);
+}
+
+body.dark #quiz-container {
+  background-color: var(--dark-button);
+}
+
+body.dark #question {
+  color: var(--dark-text);
+}
+
+body.dark button {
+  background-color: var(--dark-button-hover);
+  color: var(--dark-text);
+}
+
+body.dark button:hover {
+  background-color: var(--dark-button-hover);
+}
+
+body.dark #feedback {
+  color: var(--dark-feedback);
+}
+
+body.dark #score-container {
+  background-color: var(--dark-bg);
+}
+
+body.dark #final-score {
+  color: var(--dark-score);
+}
+
+body.dark #next {
+  background-color: var(--dark-next);
+  color: var(--dark-text);
+}
+
+body.dark #next:hover {
+  background-color: #ddd;
+}
+</style>
+</head>
+<body>
+<header>
+<h1>Quiz</h1>
+<button class="theme-toggler">Theme Change</button>
+</header>
+<div id="quiz-container">
+<div id="question"></div>
+<div id="choices">
+</div>
+<div id="feedback"></div>
+<button id="next">Next</button>
+</div>
+<div id="score-container" style="display: none">
+<div id="final-score"></div>
+</div>
+<script>
+// JavaScript code goes here
+const themeToggler = document.querySelector(".theme-toggler");
+const quizContainer = document.getElementById("quiz-container");
+const questionEl = document.getElementById("question");
+const choicesEl = document.getElementById("choices");
+const feedbackEl = document.getElementById("feedback");
+const nextButton = document.getElementById("next");
+const scoreContainer = document.getElementById("score-container");
+const finalScoreEl = document.getElementById("final-score");
+
+themeToggler.addEventListener("click", function () {
+  document.body.classList.toggle("dark");
+});
+
+let currentQuestionIndex = 0;
+let score = 0;
+let selectedAnswer = null;
+
+const quiz = [
+  {
+    question: ' What is the key difference between a while loop and a do-while loop in Java?  ',
+    choices: ["The syntax used to define the loop", "The condition check timing", "The number of iterations performed", "The ability to use the break statement "],
+    answer: 1,
+  },
+  {
+    question: "Which loop construct in Java is best suited when the number of iterations is unknown?",
+    choices: ["for loop", "do-while loop", "while loop", "none"],
+    answer: 2,
+  },
+  {
+    question:
+      "What is an infinite loop?",
+    choices: ["A loop that executes only once","A loop that contains an unreachable code block","A loop that never terminates naturally","A loop that uses the continue statement"],
+    answer: 2,
+  },
+  {
+    question:
+      "Which statement is used to exit a loop prematurely? ",
+    choices: ["return statement", "continue statement", "break statement", "exit statement"],
+    answer: 2,
+  },
+  {
+    question: "Which loop construct in Java is best suited when the number of iterations is known?",
+    choices: ["for loop", "while loop", "do-while loop", "break statement "],
+    answer: 0,
+  },
+  {
+    question:
+      "What is an Array in Java??",
+      choices: ["A collection of elements with different types ", "A collection of elements with the same type ", "A resizable data structure", "A container for storing key-value pairs"],
+    answer: 1,
+  },
+  
+];
+
+function showQuestion() {
+  const question = quiz[currentQuestionIndex];
+  questionEl.innerText = question.question;
+  choicesEl.innerHTML = "";
+  question.choices.forEach((choice, index) => {
+    const choiceEl = document.createElement("button");
+    choiceEl.innerText = choice;
+    choiceEl.value = index;
+    choiceEl.onclick = () => {
+      if (selectedAnswer === null) {
+        selectedAnswer = index;
+        checkAnswer(selectedAnswer);
+      }
+    };
+    choicesEl.appendChild(choiceEl);
+  });
+}
+
+function checkAnswer(answer) {
+  if (parseInt(answer) === quiz[currentQuestionIndex].answer) {
+    feedbackEl.innerText = "Correct!";
+    score++;
+  } else {
+    feedbackEl.innerText = `Incorrect! The correct answer is ${
+      quiz[currentQuestionIndex].choices[quiz[currentQuestionIndex].answer]
+    }`;
+  }
+  nextButton.disabled = false;
+}
+
+function showScore() {
+  quizContainer.style.display = "none";
+  scoreContainer.style.display = "block";
+  finalScoreEl.innerText = `Your final score is ${score}/${quiz.length}`;
+}
+
+nextButton.onclick = () => {
+  currentQuestionIndex++;
+  selectedAnswer = null;
+  if (currentQuestionIndex === quiz.length) {
+    showScore();
+  } else {
+    showQuestion();
+  }
+  nextButton.disabled = true;
+  feedbackEl.innerText = "";
+};
+
+showQuestion();
+</script>
+</body>
+</html>
